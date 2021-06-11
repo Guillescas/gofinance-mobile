@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
-import { HighLightCard } from '../../components/HighlightCard';
+import HighLightCard from '../../components/HighlightCard';
+import {
+  TransactionCard,
+  ITransactionCardDataProps,
+} from '../../components/TransactionCard';
 
 import {
   StylesContainer,
@@ -13,9 +17,52 @@ import {
   UserName,
   Icon,
   HighLightCards,
-} from './styles'
+  Transactions,
+  Title,
+  TransactionsList,
+} from './styles';
 
-export function Dashboard() {
+export interface IDataListProps extends ITransactionCardDataProps {
+  id: string;
+}
+
+const Dashboard = (): ReactElement => {
+  const transaction: IDataListProps[] = [
+    {
+      id: '1',
+      type: 'positive',
+      title: 'Desenvolvimento de App',
+      amount: 'R$ 4.000,00',
+      category: {
+        name: 'Job',
+        icon: 'dollar-sign',
+      },
+      date: '13/04/2021',
+    },
+    {
+      id: '2',
+      type: 'negative',
+      title: 'Comida',
+      amount: 'R$ 300,00',
+      category: {
+        name: 'Alimentação',
+        icon: 'dollar-sign',
+      },
+      date: '13/04/2021',
+    },
+    {
+      id: '3',
+      type: 'negative',
+      title: 'Comida',
+      amount: 'R$ 300,00',
+      category: {
+        name: 'Alimentação',
+        icon: 'dollar-sign',
+      },
+      date: '13/04/2021',
+    },
+  ];
+
   return (
     <StylesContainer>
       <Header>
@@ -23,7 +70,7 @@ export function Dashboard() {
           <UserInfo>
             <Photo
               source={{
-                uri: 'https://avatars.githubusercontent.com/u/59893752?v=4'
+                uri: 'https://avatars.githubusercontent.com/u/59893752?v=4',
               }}
             />
 
@@ -36,7 +83,7 @@ export function Dashboard() {
           <Icon name="power" />
         </UserWrapper>
       </Header>
-    
+
       <HighLightCards>
         <HighLightCard
           title="Entradas"
@@ -57,6 +104,18 @@ export function Dashboard() {
           type="total"
         />
       </HighLightCards>
+
+      <Transactions>
+        <Title>Listagem</Title>
+
+        <TransactionsList
+          data={transaction}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => <TransactionCard data={item} />}
+        />
+      </Transactions>
     </StylesContainer>
   );
 };
+
+export default Dashboard;

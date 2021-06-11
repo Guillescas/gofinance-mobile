@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 import {
   Container,
@@ -21,14 +21,14 @@ const icon = {
   up: 'arrow-up-circle',
   down: 'arrow-down-circle',
   total: 'dollar-sign',
-}
+};
 
-export function HighLightCard({
+const HighLightCard = ({
   type,
   title,
   amount,
-  lastTransaction
-}: IHighLightCardProps) {
+  lastTransaction,
+}: IHighLightCardProps): ReactElement => {
   return (
     <Container type={type}>
       <Header>
@@ -38,10 +38,10 @@ export function HighLightCard({
 
       <Footer>
         <Amount type={type}>{amount}</Amount>
-        <LastTransaction type={type}>
-          {lastTransaction}
-        </LastTransaction>
+        <LastTransaction type={type}>{lastTransaction}</LastTransaction>
       </Footer>
     </Container>
   );
 };
+
+export default HighLightCard;
