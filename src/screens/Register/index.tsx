@@ -118,7 +118,7 @@ const Register = (): ReactElement => {
           </Fields>
 
           <Button
-            onPress={handleSubmit(handleRegisterTransactionFormSubmit)}
+            onPress={() => handleSubmit(handleRegisterTransactionFormSubmit)}
             title="Enviar"
           />
         </Form>

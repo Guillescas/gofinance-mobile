@@ -11,6 +11,7 @@ import {
   Header,
   UserWrapper,
   UserInfo,
+  LogoutButton,
   Photo,
   User,
   UserGreeting,
@@ -80,7 +81,13 @@ const Dashboard = (): ReactElement => {
             </User>
           </UserInfo>
 
-          <Icon name="power" />
+          <LogoutButton
+            onPress={() => {
+              console.log('oi');
+            }}
+          >
+            <Icon name="power" />
+          </LogoutButton>
         </UserWrapper>
       </Header>
 
