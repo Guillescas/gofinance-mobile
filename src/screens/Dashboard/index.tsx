@@ -1,10 +1,14 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState, useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 import HighLightCard from '../../components/HighlightCard';
 import {
   TransactionCard,
   ITransactionCardDataProps,
 } from '../../components/TransactionCard';
+
+import formatPrice from '../../utils/formatPrice';
 
 import {
   StylesContainer,
@@ -28,41 +32,43 @@ export interface IDataListProps extends ITransactionCardDataProps {
 }
 
 const Dashboard = (): ReactElement => {
-  const transaction: IDataListProps[] = [
-    {
-      id: '1',
-      type: 'positive',
-      title: 'Desenvolvimento de App',
-      amount: 'R$ 4.000,00',
-      category: {
-        name: 'Job',
-        icon: 'dollar-sign',
-      },
-      date: '13/04/2021',
-    },
-    {
-      id: '2',
-      type: 'negative',
-      title: 'Comida',
-      amount: 'R$ 300,00',
-      category: {
-        name: 'Alimentação',
-        icon: 'dollar-sign',
-      },
-      date: '13/04/2021',
-    },
-    {
-      id: '3',
-      type: 'negative',
-      title: 'Comida',
-      amount: 'R$ 300,00',
-      category: {
-        name: 'Alimentação',
-        icon: 'dollar-sign',
-      },
-      date: '13/04/2021',
-    },
-  ];
+  const [transactions, setTransactions] = useState<IDataListProps[]>([]);
+
+  async function loadTransactions() {
+    const transactionsFromStorage = await AsyncStorage.getItem(
+      '@gofinance:transactions',
+    );
+    const parsedTransactionsFromStorage: IDataListProps[] =
+      transactionsFromStorage ? JSON.parse(transactionsFromStorage) : [];
+
+    const formattedTransactions: IDataListProps[] =
+      parsedTransactionsFromStorage.map(transaction => {
+        return {
+          id: transaction.id,
+          name: transaction.name,
+          price: formatPrice(transaction.price),
+          type: transaction.type,
+          category: transaction.category,
+          date: Intl.DateTimeFormat('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+          }).format(new Date(transaction.date)),
+        };
+      });
+
+    setTransactions(formattedTransactions);
+  }
+
+  useEffect(() => {
+    loadTransactions();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadTransactions();
+    }, []),
+  );
 
   return (
     <StylesContainer>
@@ -83,7 +89,7 @@ const Dashboard = (): ReactElement => {
 
           <LogoutButton
             onPress={() => {
-              console.log('oi');
+              console.log('LogoutButtonPressed');
             }}
           >
             <Icon name="power" />
@@ -116,7 +122,7 @@ const Dashboard = (): ReactElement => {
         <Title>Listagem</Title>
 
         <TransactionsList
-          data={transaction}
+          data={transactions}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <TransactionCard data={item} />}
         />
