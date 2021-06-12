@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
 
 export const Container = styled(RectButton).attrs({
-  activeOpacity: 0.7,
+  activeOpacity: 0.1,
 })`
   background: ${({ theme }) => theme.colors.shape};
   flex-direction: row;
