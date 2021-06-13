@@ -32,6 +32,7 @@ const schema = Yup.object().shape({
   name: Yup.string().required('O nome é obrigatório'),
   price: Yup.number()
     .positive('O valor tem de ser positivo')
+    .typeError('O valor precisa ser numérico')
     .required('O preço é obrigatório'),
 });
 
@@ -82,7 +83,6 @@ const Register = (): ReactElement => {
       const storagedData = await AsyncStorage.getItem(
         '@gofinance:transactions',
       );
-      await AsyncStorage.removeItem('@gofinance:transactions');
 
       const formattedStoragedData = storagedData
         ? JSON.parse(storagedData)
