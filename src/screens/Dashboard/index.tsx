@@ -46,7 +46,7 @@ export interface IDataListProps extends ITransactionCardDataProps {
 }
 
 const Dashboard = (): ReactElement => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [transactions, setTransactions] = useState<IDataListProps[]>([]);
   const [highLightData, setHighLightData] = useState<IHighLightDataData>(
@@ -79,8 +79,6 @@ const Dashboard = (): ReactElement => {
   }
 
   async function loadTransactions() {
-    setIsLoading(true);
-
     totalIncome = 0;
     totalOutcome = 0;
 
@@ -188,26 +186,20 @@ const Dashboard = (): ReactElement => {
           <HighLightCards>
             <HighLightCard
               title="Entradas"
-              amount={highLightData && highLightData.income.amount}
-              lastTransaction={`Última entrada dia ${
-                highLightData && highLightData.income.lastTransaction
-              }`}
+              amount={highLightData.income.amount}
+              lastTransaction={`Última entrada dia ${highLightData.income.lastTransaction}`}
               type="up"
             />
             <HighLightCard
               title="Saídas"
-              amount={highLightData && highLightData.outcome.amount}
-              lastTransaction={`Última saída dia ${
-                highLightData && highLightData.income.lastTransaction
-              }`}
+              amount={highLightData.outcome.amount}
+              lastTransaction={`Última saída dia ${highLightData.income.lastTransaction}`}
               type="down"
             />
             <HighLightCard
               title="Total"
-              amount={highLightData && highLightData.balance.amount}
-              lastTransaction={
-                highLightData && highLightData.balance.lastTransaction
-              }
+              amount={highLightData.balance.amount}
+              lastTransaction={highLightData.balance.lastTransaction}
               type="total"
             />
           </HighLightCards>

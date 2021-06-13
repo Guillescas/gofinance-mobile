@@ -112,6 +112,7 @@ const Resume = (): ReactElement => {
   useFocusEffect(
     useCallback(() => {
       loadData();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDate]),
   );
 
