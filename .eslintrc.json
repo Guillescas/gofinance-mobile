@@ -28,6 +28,7 @@
         "prettier"
     ],
     "rules": {
+      "@typescript-eslint/no-non-null-assertion": "off",
       "camelcase": "off",
       "react/jsx-props-no-spreading": "off",
       "no-use-before-define": "off",
