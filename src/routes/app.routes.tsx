@@ -15,7 +15,7 @@ interface ITabBarIconProps {
   color: string;
 }
 
-export function AppRouter(): ReactElement {
+export function AppRoutes(): ReactElement {
   const theme = useTheme();
 
   return (
