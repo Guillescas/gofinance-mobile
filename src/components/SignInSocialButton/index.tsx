@@ -6,15 +6,17 @@ import * as S from './styles';
 interface ISignInSocialButtonProps {
   title: string;
   svg: React.FC<SvgProps>;
+  onPress: () => void;
 }
 
 const SignInSocialButton = ({
   title,
   svg: Svg,
+  onPress,
   ...rest
 }: ISignInSocialButtonProps): ReactElement => {
   return (
-    <S.Container {...rest}>
+    <S.Container {...rest} onPress={onPress}>
       <S.ImageContainer>
         <Svg />
       </S.ImageContainer>
