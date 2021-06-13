@@ -1,16 +1,18 @@
 /* eslint-disable import/no-duplicates */
 import React, { ReactElement, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { VictoryPie } from 'victory-native';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { addMonths, subMonths, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useTheme } from 'styled-components';
-
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+
+import { useTheme } from 'styled-components';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useAuth } from '../../hook/auth';
+
 import HistoryCard from '../../components/HistoryCard';
 
 import { categories } from '../../utils/categories';
@@ -44,8 +46,11 @@ const Resume = (): ReactElement => {
     ITotalOfCategoriesData[]
   >([]);
 
+  const { user } = useAuth();
   const theme = useTheme();
   const bottomHeight = useBottomTabBarHeight();
+
+  const asyncStorageDataKey = `@gofinance:transactions_user:${user.id}`;
 
   const handleChangeDate = (action: 'next' | 'prev') => {
     if (action === 'next') {
@@ -59,7 +64,7 @@ const Resume = (): ReactElement => {
     setIsLoading(true);
     setTotalOutcomeByCategories([]);
     const transactionsFromStorage = await AsyncStorage.getItem(
-      '@gofinance:transactions',
+      asyncStorageDataKey,
     );
     const parsedTransactionsFromStorage: ITransactionData[] =
       transactionsFromStorage ? JSON.parse(transactionsFromStorage) : [];

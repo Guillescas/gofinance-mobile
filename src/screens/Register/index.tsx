@@ -14,6 +14,8 @@ import TransactionTypeButton from '../../components/Forms/TransactionTypeButton'
 
 import CategorySelectModal from '../CategorySelectModal';
 
+import { useAuth } from '../../hook/auth';
+
 import {
   Container,
   Header,
@@ -39,6 +41,10 @@ const schema = Yup.object().shape({
 const Register = (): ReactElement => {
   const [transactionType, setTransactionType] = useState('');
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+
+  const { user } = useAuth();
+
+  const asyncStorageDataKey = `@gofinance:transactions_user:${user.id}`;
 
   const [category, setCategory] = useState({
     key: 'category',
@@ -80,9 +86,7 @@ const Register = (): ReactElement => {
     };
 
     try {
-      const storagedData = await AsyncStorage.getItem(
-        '@gofinance:transactions',
-      );
+      const storagedData = await AsyncStorage.getItem(asyncStorageDataKey);
 
       const formattedStoragedData = storagedData
         ? JSON.parse(storagedData)
@@ -90,7 +94,7 @@ const Register = (): ReactElement => {
 
       const updatedStorageData = [...formattedStoragedData, newTransactionData];
       await AsyncStorage.setItem(
-        '@gofinance:transactions',
+        asyncStorageDataKey,
         JSON.stringify(updatedStorageData),
       );
 

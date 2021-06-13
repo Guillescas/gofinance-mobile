@@ -4,6 +4,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
 
 import { useTheme } from 'styled-components';
+import { useAuth } from '../../hook/auth';
+
 import HighLightCard from '../../components/HighlightCard';
 import {
   TransactionCard,
@@ -54,6 +56,9 @@ const Dashboard = (): ReactElement => {
   );
 
   const theme = useTheme();
+  const { signOut, user } = useAuth();
+
+  const asyncStorageDataKey = `@gofinance:transactions_user:${user.id}`;
 
   let totalIncome = 0;
   let totalOutcome = 0;
@@ -62,13 +67,21 @@ const Dashboard = (): ReactElement => {
     collection: IDataListProps[],
     type: 'positive' | 'negative',
   ) {
+    const filtteredCollection = collection.filter(
+      transaction => transaction.type === type,
+    );
+
+    if (filtteredCollection.length === 0) {
+      return 0;
+    }
+
     const lastTransaction = new Date(
       // eslint-disable-next-line prefer-spread
       Math.max.apply(
         Math,
-        collection
-          .filter(transaction => transaction.type === type)
-          .map(transaction => new Date(transaction.date).getTime()),
+        filtteredCollection.map(transaction =>
+          new Date(transaction.date).getTime(),
+        ),
       ),
     );
 
@@ -83,7 +96,7 @@ const Dashboard = (): ReactElement => {
     totalOutcome = 0;
 
     const transactionsFromStorage = await AsyncStorage.getItem(
-      '@gofinance:transactions',
+      asyncStorageDataKey,
     );
     const parsedTransactionsFromStorage: IDataListProps[] =
       transactionsFromStorage ? JSON.parse(transactionsFromStorage) : [];
@@ -123,16 +136,25 @@ const Dashboard = (): ReactElement => {
       parsedTransactionsFromStorage,
       'negative',
     );
-    const intervalOfIncomeAndOutcomeTransactions = `01 à ${lastOutcomeTransaction}`;
+    const intervalOfIncomeAndOutcomeTransactions =
+      lastOutcomeTransaction === 0
+        ? 'Não há transações'
+        : `01 à ${lastOutcomeTransaction}`;
 
     setHighLightData({
       income: {
         amount: formatPrice(totalIncome),
-        lastTransaction: lastIncomeTransaction,
+        lastTransaction:
+          lastIncomeTransaction === 0
+            ? 'Não há transações'
+            : `Última entrada dia ${lastIncomeTransaction}`,
       },
       outcome: {
         amount: formatPrice(totalOutcome),
-        lastTransaction: lastOutcomeTransaction,
+        lastTransaction:
+          lastIncomeTransaction === 0
+            ? 'Não há transações'
+            : `Última saída dia ${lastIncomeTransaction}`,
       },
       balance: {
         amount: formatPrice(total),
@@ -146,6 +168,7 @@ const Dashboard = (): ReactElement => {
   useFocusEffect(
     useCallback(() => {
       loadTransactions();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
   );
 
@@ -162,22 +185,17 @@ const Dashboard = (): ReactElement => {
               <UserInfo>
                 <Photo
                   source={{
-                    uri: 'https://avatars.githubusercontent.com/u/59893752?v=4',
+                    uri: user.photo,
                   }}
                 />
 
                 <User>
                   <UserGreeting>Olá, </UserGreeting>
-                  <UserName>Guilherme</UserName>
+                  <UserName>{user.name.split(' ')[0]}</UserName>
                 </User>
               </UserInfo>
 
-              <LogoutButton
-                onPress={() => {
-                  // eslint-disable-next-line no-console
-                  console.log('LogoutButtonPressed');
-                }}
-              >
+              <LogoutButton onPress={signOut}>
                 <Icon name="power" />
               </LogoutButton>
             </UserWrapper>
@@ -187,13 +205,13 @@ const Dashboard = (): ReactElement => {
             <HighLightCard
               title="Entradas"
               amount={highLightData.income.amount}
-              lastTransaction={`Última entrada dia ${highLightData.income.lastTransaction}`}
+              lastTransaction={highLightData.income.lastTransaction}
               type="up"
             />
             <HighLightCard
               title="Saídas"
               amount={highLightData.outcome.amount}
-              lastTransaction={`Última saída dia ${highLightData.income.lastTransaction}`}
+              lastTransaction={highLightData.income.lastTransaction}
               type="down"
             />
             <HighLightCard
