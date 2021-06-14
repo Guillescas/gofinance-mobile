@@ -28,7 +28,7 @@ export default function App(): ReactElement {
 
   const { isUserDataLoading } = useAuth();
 
-  if (!fontsLoaded && isUserDataLoading) {
+  if (!fontsLoaded || isUserDataLoading) {
     return <AppLoading />;
   }
 
