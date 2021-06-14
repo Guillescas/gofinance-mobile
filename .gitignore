@@ -31,6 +31,9 @@ local.properties
 *.iml
 *.hprof
 
+.env
+config.ts
+
 # node.js
 #
 node_modules/

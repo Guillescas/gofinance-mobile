@@ -1,0 +1,4 @@
+export const environmentVariables = {
+  IOS_CLIENT_ID: 'YOUR_IOS_CLIENT_ID_HERE',
+  ANDROID_CLIENT_ID: 'YOUR_ANDROID_CLIENT_ID_HERE',
+};
